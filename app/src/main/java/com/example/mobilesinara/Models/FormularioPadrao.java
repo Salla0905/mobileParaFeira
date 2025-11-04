@@ -34,6 +34,10 @@ public class FormularioPadrao {
         this.idFuncionario = idFuncionario;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public Date getDataPreenchimento() {
         return dataPreenchimento;
     }

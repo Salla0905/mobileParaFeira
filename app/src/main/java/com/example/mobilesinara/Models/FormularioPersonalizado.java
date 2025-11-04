@@ -25,7 +25,9 @@ public class FormularioPersonalizado {
         this.campos = campos;
         this.idPermissao = idPermissao;
     }
-
+    public String getId(){
+        return id;
+    }
     public int getIdCriador() { return idCriador; }
     public String getTitulo() { return titulo; }
     public String getDescricao() { return descricao; }

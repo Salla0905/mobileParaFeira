@@ -163,7 +163,8 @@ public class DashboardFragment extends Fragment {
                                         titulo = "Formulário Padrão";
                                     }
                                     String status = f.getQualidade() != null ? f.getQualidade() : "Sem status";
-                                    listaUnificadaAll.add(new FormularioItem("padrao", titulo, status, f.getDataPreenchimento()));
+                                    String id = f.getId() != null ? f.getId() : "-1";
+                                    listaUnificadaAll.add(new FormularioItem(id, "padrao", titulo, status, f.getDataPreenchimento()));
                                 }
                                 adapter.updateList(new ArrayList<>(listaUnificadaAll));
                             } else {
@@ -184,7 +185,8 @@ public class DashboardFragment extends Fragment {
                             if (response.isSuccessful() && response.body() != null) {
                                 for (FormularioPersonalizado f : response.body()) {
                                     String titulo = f.getTitulo() != null ? f.getTitulo() : "Formulário Personalizado";
-                                    listaUnificadaAll.add(new FormularioItem("personalizado", titulo, "Aguardando resposta", null));
+                                    String id = f.getId() != null ? f.getId() : "-1";
+                                    listaUnificadaAll.add(new FormularioItem(id, "personalizado", titulo, "Aguardando resposta", null));
                                 }
                                 adapter.updateList(new ArrayList<>(listaUnificadaAll));
                             } else {
