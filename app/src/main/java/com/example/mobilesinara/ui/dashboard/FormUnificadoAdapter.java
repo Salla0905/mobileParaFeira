@@ -71,6 +71,7 @@ public class FormUnificadoAdapter extends RecyclerView.Adapter<FormUnificadoAdap
         holder.bt_principal.setText("Abrir");
         holder.bt_principal.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
+            bundle.putString("tipo", item.getTipo());
 
             if (item.getId() != null) {
                 bundle.putString("idFormulario", item.getId());
