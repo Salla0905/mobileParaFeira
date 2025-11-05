@@ -6,6 +6,7 @@ import com.example.mobilesinara.Models.Respostas;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -18,5 +19,5 @@ public interface IRespostaFormularioPersonalizado {
     @GET("https://ms-sinara-mongo.onrender.com/resposta-formulario-personalizado/contar-respostas-por-operario/{idOperario}")
     Call<Integer> getQuantidadeRespostasPorUsuario(@Path("idOperario") int id);
     @POST("https://ms-sinara-mongo.onrender.com/resposta-formulario-personalizado/inserir")
-    Call<RespostaFormularioPersonalizado> insertRespostaFormularioPersonalizado(@Body RespostaFormularioPersonalizado respostaFormularioPersonalizado);
+    Call<ResponseBody> insertRespostaFormularioPersonalizado(@Body RespostaFormularioPersonalizado respostaFormularioPersonalizado);
 }

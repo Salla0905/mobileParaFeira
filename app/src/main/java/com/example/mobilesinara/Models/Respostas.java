@@ -10,4 +10,17 @@ public class Respostas {
         this.campoTipo = campoTipo;
         this.valor = valor;
     }
+
+    public String getCampoLabel() {
+        return campoLabel;
+    }
+
+    public String getCampoTipo() {
+        return campoTipo;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
 }

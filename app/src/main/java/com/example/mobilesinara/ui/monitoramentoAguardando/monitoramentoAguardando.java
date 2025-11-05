@@ -42,6 +42,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,8 +50,8 @@ import retrofit2.Response;
 public class monitoramentoAguardando extends Fragment {
 
     private FragmentMonitoramentoAguardandoBinding binding;
-    private List<Respostas> respostasList = new ArrayList<>();
     private static final String TAG = "MonitoramentoAguardando";
+    private Respostas respostaSelecionada = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -63,13 +64,15 @@ public class monitoramentoAguardando extends Fragment {
 
         Bundle args = getArguments();
         if (args == null || !args.containsKey("idUser") || !args.containsKey("idFormulario") || !args.containsKey("tipo")) {
-            Toast.makeText(getContext(), "Erro: usuário, formulário ou tipo não identificado", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Erro: parâmetros ausentes", Toast.LENGTH_SHORT).show();
             return root;
         }
 
+        final int[] idEmpresa = new int[1];
         int idUser = args.getInt("idUser");
         String idFormulario = args.getString("idFormulario");
         String tipo = args.getString("tipo");
+        TextView descricao = root.findViewById(R.id.textView26);
 
         LinearLayout layoutOpcoes = root.findViewById(R.id.layoutOpcoes);
 
@@ -80,10 +83,11 @@ public class monitoramentoAguardando extends Fragment {
             @Override
             public void onResponse(Call<Operario> call, Response<Operario> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    idEmpresa[0] = response.body().getIdEmpresa();
                     if (tipo.equalsIgnoreCase("padrao") || tipo.equalsIgnoreCase("padrão")) {
-                        carregarFormularioPadrao(layoutOpcoes, idFormulario);
+                        carregarFormularioPadrao(layoutOpcoes, idFormulario, descricao);
                     } else if (tipo.equalsIgnoreCase("personalizado")) {
-                        carregarFormularioPersonalizado(layoutOpcoes, idFormulario);
+                        carregarFormularioPersonalizado(layoutOpcoes, idFormulario, descricao);
                     } else {
                         Toast.makeText(requireContext(), "Tipo não identificado", Toast.LENGTH_SHORT).show();
                     }
@@ -94,51 +98,54 @@ public class monitoramentoAguardando extends Fragment {
 
             @Override
             public void onFailure(Call<Operario> call, Throwable t) {
-                Toast.makeText(requireContext(), "Usuário não foi encontrado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Falha de conexão", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Erro ao buscar operário", t);
             }
         });
 
         Button btEnviar = root.findViewById(R.id.button9);
         btEnviar.setOnClickListener(v -> {
-            respostasList.clear();
-            if (!validarCampos(layoutOpcoes)) {
-                Toast.makeText(requireContext(), "Preencha todos os campos obrigatórios antes de enviar", Toast.LENGTH_SHORT).show();
+            respostaSelecionada = coletarPrimeiraResposta(layoutOpcoes);
+            if (respostaSelecionada == null) {
+                Toast.makeText(requireContext(), "Preencha pelo menos um campo obrigatório", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            coletarRespostas(layoutOpcoes);
-
             String dataISO = getDataAtualISO();
+
+            List<Respostas> listaRespostas = new ArrayList<>();
+            listaRespostas.add(respostaSelecionada);
+
             RespostaFormularioPersonalizado resposta = new RespostaFormularioPersonalizado(
-                    respostasList,
+                    listaRespostas,
                     dataISO,
                     idFormulario,
                     idUser,
-                    idUser // se idEmpresa == idUser, ajuste conforme necessário
+                    idEmpresa[0]
             );
 
             Gson gson = new Gson();
             Log.i("JSON_ENVIADO", gson.toJson(resposta));
 
             IRespostaFormularioPersonalizado api = ApiClientAdapter.getRetrofitInstance().create(IRespostaFormularioPersonalizado.class);
-            Call<RespostaFormularioPersonalizado> call = api.insertRespostaFormularioPersonalizado(resposta);
+            Call<ResponseBody> call = api.insertRespostaFormularioPersonalizado(resposta);
 
-            call.enqueue(new Callback<RespostaFormularioPersonalizado>() {
+            call.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<RespostaFormularioPersonalizado> call, Response<RespostaFormularioPersonalizado> response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(requireContext(), "Respostas enviadas com sucesso!", Toast.LENGTH_SHORT).show();
                         Navigation.findNavController(v).navigate(R.id.formularioRespondido);
                     } else {
-                        Toast.makeText(requireContext(), "Erro ao enviar respostas (HTTP " + response.code() + ")", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Erro ao enviar: " + response.message());
+                        Toast.makeText(requireContext(), "Erro ao enviar: " + response.code(), Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Erro HTTP: " + response.code());
                     }
                 }
 
                 @Override
-                public void onFailure(Call<RespostaFormularioPersonalizado> call, Throwable t) {
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Toast.makeText(requireContext(), "Falha ao conectar ao servidor", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Falha: " + t.getMessage(), t);
+                    Log.e(TAG, "Falha Retrofit", t);
                 }
             });
         });
@@ -152,52 +159,24 @@ public class monitoramentoAguardando extends Fragment {
         return sdf.format(new Date());
     }
 
-    private boolean validarCampos(LinearLayout layoutOpcoes) {
-        for (int i = 0; i < layoutOpcoes.getChildCount(); i++) {
-            View card = layoutOpcoes.getChildAt(i);
-            TextView txtPergunta = card.findViewById(R.id.txtPergunta);
-
-            // Texto
-            View textInput = card.findViewById(R.id.text_desc);
-            if (textInput instanceof TextInputEditText) {
-                String texto = ((TextInputEditText) textInput).getText().toString().trim();
-                if (txtPergunta.getText().toString().contains("*") && texto.isEmpty()) return false;
-            }
-
-            // Alternativas
-            LinearLayout opcoesContainer = card.findViewById(R.id.opcoesContainer);
-            if (opcoesContainer != null) {
-                for (int j = 0; j < opcoesContainer.getChildCount(); j++) {
-                    View inner = opcoesContainer.getChildAt(j);
-                    if (inner instanceof RadioGroup) {
-                        RadioGroup group = (RadioGroup) inner;
-                        if (txtPergunta.getText().toString().contains("*") && group.getCheckedRadioButtonId() == -1)
-                            return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    private void coletarRespostas(LinearLayout layoutOpcoes) {
+    private Respostas coletarPrimeiraResposta(LinearLayout layoutOpcoes) {
         for (int i = 0; i < layoutOpcoes.getChildCount(); i++) {
             View card = layoutOpcoes.getChildAt(i);
             TextView txtPergunta = card.findViewById(R.id.txtPergunta);
             String label = txtPergunta.getText().toString().replace(" *", "");
 
-            // Texto
+            // Campo de texto
             View textInput = card.findViewById(R.id.text_desc);
             if (textInput instanceof TextInputEditText) {
                 String texto = ((TextInputEditText) textInput).getText().toString().trim();
                 if (!texto.isEmpty()) {
-                    respostasList.add(new Respostas(label, "texto", texto));
+                    return new Respostas(label, "texto", texto);
                 }
             }
 
-            // Alternativas
+            // Campo de escolha
             LinearLayout opcoesContainer = card.findViewById(R.id.opcoesContainer);
-            if (opcoesContainer != null) {
+            if (opcoesContainer != null && opcoesContainer.getChildCount() > 0) {
                 for (int j = 0; j < opcoesContainer.getChildCount(); j++) {
                     View inner = opcoesContainer.getChildAt(j);
                     if (inner instanceof RadioGroup) {
@@ -205,38 +184,34 @@ public class monitoramentoAguardando extends Fragment {
                         int checkedId = group.getCheckedRadioButtonId();
                         if (checkedId != -1) {
                             RadioButton rb = group.findViewById(checkedId);
-                            respostasList.add(new Respostas(label, "escolha", rb.getText().toString()));
+                            return new Respostas(label, "escolha", rb.getText().toString());
                         }
                     }
                 }
             }
         }
+        return null;
     }
 
-    private void carregarFormularioPadrao(LinearLayout layoutOpcoes, String idFormulario) {
+    private void carregarFormularioPadrao(LinearLayout layoutOpcoes, String idFormulario, TextView desc) {
         IFormularioPadrao api = ApiClientAdapter.getRetrofitInstance().create(IFormularioPadrao.class);
         api.getFormularioPadrao(idFormulario).enqueue(new Callback<FormularioPadrao>() {
             @Override
             public void onResponse(Call<FormularioPadrao> call, Response<FormularioPadrao> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    desc.setText("Formulário padrão");
                     FormularioPadrao f = response.body();
                     Map<String, Object> campos = new LinkedHashMap<>();
                     campos.put("Cloro Residual", f.getCloroResidual());
-                    campos.put("Cor da Água Bruta", f.getCorAguaBruta());
-                    campos.put("Cor da Água Tratada", f.getCorAguaTratada());
-                    campos.put("Fluoreto", f.getFluoreto());
-                    campos.put("Nitrato", f.getNitrato());
                     campos.put("pH Água Bruta", f.getPhAguaBruta());
                     campos.put("pH Água Tratada", f.getPhAguaTratada());
-                    campos.put("Turbidez Água Bruta", f.getTurbinezAguaBruta());
-                    campos.put("Turbidez Água Tratada", f.getTurbidezAguaTratada());
                     campos.put("Qualidade", f.getQualidade());
 
                     LayoutInflater inflater = getLayoutInflater();
-                    for (Map.Entry<String, Object> entry : campos.entrySet()) {
+                    for (String key : campos.keySet()) {
                         View card = inflater.inflate(R.layout.item_pergunta_texto, layoutOpcoes, false);
                         TextView txtPergunta = card.findViewById(R.id.txtPergunta);
-                        txtPergunta.setText(entry.getKey());
+                        txtPergunta.setText(key);
                         layoutOpcoes.addView(card);
                     }
                 } else {
@@ -246,17 +221,19 @@ public class monitoramentoAguardando extends Fragment {
 
             @Override
             public void onFailure(Call<FormularioPadrao> call, Throwable t) {
-                Toast.makeText(requireContext(), "Falha de conexão com o servidor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Falha de conexão", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Erro no formulário padrão", t);
             }
         });
     }
 
-    private void carregarFormularioPersonalizado(LinearLayout layoutOpcoes, String idFormulario) {
+    private void carregarFormularioPersonalizado(LinearLayout layoutOpcoes, String idFormulario, TextView desc) {
         IFormularioPersonalizado api = ApiClientAdapter.getRetrofitInstance().create(IFormularioPersonalizado.class);
         api.getFormularioPersonalizado(idFormulario).enqueue(new Callback<FormularioPersonalizado>() {
             @Override
             public void onResponse(Call<FormularioPersonalizado> call, Response<FormularioPersonalizado> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    desc.setText(response.body().getDescricao());
                     FormularioPersonalizado form = response.body();
                     LayoutInflater inflater = getLayoutInflater();
 
@@ -271,6 +248,7 @@ public class monitoramentoAguardando extends Fragment {
                             TextView txtPergunta = card.findViewById(R.id.txtPergunta);
                             txtPergunta.setText(label);
                             layoutOpcoes.addView(card);
+
                         } else if (campo.getTipo().equalsIgnoreCase("Escolha")) {
                             View card = inflater.inflate(R.layout.item_pergunta_alternativa, layoutOpcoes, false);
                             TextView txtPergunta = card.findViewById(R.id.txtPergunta);
@@ -279,25 +257,48 @@ public class monitoramentoAguardando extends Fragment {
                             LinearLayout opcoesContainer = card.findViewById(R.id.opcoesContainer);
                             RadioGroup group = new RadioGroup(requireContext());
                             group.setOrientation(RadioGroup.VERTICAL);
+                            group.setLayoutParams(new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                            ));
 
-                            for (String opcao : campo.getOpcoes()) {
-                                RadioButton rb = new RadioButton(requireContext());
-                                rb.setText(opcao);
-                                group.addView(rb);
+                            List<String> opcoes = campo.getOpcoes();
+                            if (opcoes != null && !opcoes.isEmpty()) {
+                                for (String opcao : opcoes) {
+                                    RadioButton rb = new RadioButton(requireContext());
+                                    rb.setText(opcao);
+                                    rb.setTextColor(getResources().getColor(R.color.md_theme_primaryContainer));
+                                    rb.setTextSize(16);
+                                    group.addView(rb);
+                                }
+
+                                // 🔥 Adiciona o grupo de opções antes de adicionar o card no layout
+                                opcoesContainer.removeAllViews();
+                                opcoesContainer.addView(group);
+                                layoutOpcoes.addView(card);
+
+                                Log.d(TAG, "Campo adicionado: " + label + " (" + opcoes.size() + " opções)");
+
+                            } else {
+                                Log.w(TAG, "Campo sem opções: " + campo.getLabel());
+                                TextView aviso = new TextView(requireContext());
+                                aviso.setText("Sem opções disponíveis");
+                                aviso.setTextColor(getResources().getColor(R.color.md_theme_error));
+                                opcoesContainer.addView(aviso);
+                                layoutOpcoes.addView(card);
                             }
-
-                            opcoesContainer.addView(group);
-                            layoutOpcoes.addView(card);
                         }
                     }
                 } else {
                     Toast.makeText(requireContext(), "Erro ao carregar formulário personalizado", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "HTTP " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<FormularioPersonalizado> call, Throwable t) {
-                Toast.makeText(requireContext(), "Falha de conexão com o servidor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Falha ao buscar formulário", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Erro no formulário personalizado", t);
             }
         });
     }

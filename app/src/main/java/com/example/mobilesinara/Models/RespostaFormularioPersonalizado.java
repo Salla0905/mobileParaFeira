@@ -3,6 +3,7 @@ package com.example.mobilesinara.Models;
 import java.util.List;
 
 public class RespostaFormularioPersonalizado {
+    private String id;
     private List<Respostas> respostas;
     private String data;
     private String idForm;
@@ -21,31 +22,7 @@ public class RespostaFormularioPersonalizado {
         return respostas;
     }
 
-    public String getData() {
-        return data;
-    }
-
-    public String getIdForm() {
-        return idForm;
-    }
-
-    public int getIdOperario() {
-        return idOperario;
-    }
-
     public void setRespostas(List<Respostas> respostas) {
         this.respostas = respostas;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public void setIdForm(String idForm) {
-        this.idForm = idForm;
-    }
-
-    public void setIdOperario(int idOperario) {
-        this.idOperario = idOperario;
     }
 }
