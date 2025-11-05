@@ -18,5 +18,5 @@ public interface IRespostaFormularioPersonalizado {
     @GET("https://ms-sinara-mongo.onrender.com/resposta-formulario-personalizado/contar-respostas-por-operario/{idOperario}")
     Call<Integer> getQuantidadeRespostasPorUsuario(@Path("idOperario") int id);
     @POST("https://ms-sinara-mongo.onrender.com/resposta-formulario-personalizado/inserir")
-    boolean insertRespostaFormularioPersonalizado(@Body List<Respostas> respostas, Date data, String idForm, String idOperario);
+    Call<RespostaFormularioPersonalizado> insertRespostaFormularioPersonalizado(@Body RespostaFormularioPersonalizado respostaFormularioPersonalizado);
 }
