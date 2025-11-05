@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.bumptech.glide.Glide;
 import com.example.mobilesinara.Interface.Mongo.IFormularioPadrao;
 import com.example.mobilesinara.Interface.Mongo.IFormularioPersonalizado;
 import com.example.mobilesinara.Interface.Mongo.IRespostaFormularioPersonalizado;
