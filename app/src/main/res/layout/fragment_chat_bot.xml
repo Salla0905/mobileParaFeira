@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/voltar"
+        android:layout_width="15dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="97dp"
+        android:src="@drawable/bt_voltar"
+        android:textColor="@color/md_theme_primaryContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/imgEmpresa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,7 +109,7 @@
             android:fontFamily="@font/montserrat"
             android:gravity="start"
             android:hint="Digite sua mensagem"
-            android:textColor="#7085A2"
+            android:textColor="@color/md_theme_primaryContainer"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 

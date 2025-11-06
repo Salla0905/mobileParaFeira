@@ -43,10 +43,11 @@
 
     <TextView
         android:id="@+id/textView10"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
         android:text="Empresa"
         android:textColor="@color/md_theme_primaryContainer"
         android:textSize="28sp"

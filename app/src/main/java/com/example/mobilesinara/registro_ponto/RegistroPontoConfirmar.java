@@ -79,6 +79,7 @@ public class RegistroPontoConfirmar extends Fragment {
         ImageView imgEmpresa = view.findViewById(R.id.iconEmpresa);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
+        // Atualiza hora a cada segundo
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
@@ -100,6 +101,7 @@ public class RegistroPontoConfirmar extends Fragment {
             }
         });
 
+        // Clique para registrar ponto
         btRegistroPonto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,35 +114,66 @@ public class RegistroPontoConfirmar extends Fragment {
                             Operario operario = response.body();
                             int idEmpresa = operario.getIdEmpresa();
 
-                            String dataHoraAtual = java.time.LocalDateTime.now().toString();
-
-                            RegistroPontoRequest registro = new RegistroPontoRequest(
-                                    dataHoraAtual,
-                                    null,
-                                    usuarioId,
-                                    idEmpresa
-                            );
-
                             IRegistroPonto iRegistroPonto = ApiClientAdapter.getRetrofitInstance().create(IRegistroPonto.class);
-                            iRegistroPonto.inserirRegistroPonto(registro).enqueue(new Callback<String>() {
+
+                            // Pega quantidade de registros do dia para decidir entrada/saída
+                            iRegistroPonto.getQuantidadeRegistroPonto(usuarioId).enqueue(new Callback<Integer>() {
                                 @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    if (response.isSuccessful()) {
-                                        Toast.makeText(getContext(), "Ponto registrado com sucesso!", Toast.LENGTH_SHORT).show();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putBoolean("atualizarStatus", true);
-                                        Navigation.findNavController(view).navigate(R.id.action_registroPontoConfirmar_to_registroPontoSucesso, bundle);
+                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        int quantidade = response.body();
+
+                                        RegistroPontoRequest registro;
+                                        if (quantidade % 2 == 0) {
+                                            // Registrar entrada
+                                            registro = new RegistroPontoRequest(
+                                                    LocalDateTime.now().toString(), // horarioEntrada
+                                                    null,                           // horarioSaida
+                                                    usuarioId,
+                                                    idEmpresa
+                                            );
+                                        } else {
+                                            // Registrar saída
+                                            registro = new RegistroPontoRequest(
+                                                    null,                           // horarioEntrada
+                                                    LocalDateTime.now().toString(), // horarioSaida
+                                                    usuarioId,
+                                                    idEmpresa
+                                            );
+                                        }
+
+                                        iRegistroPonto.inserirRegistroPonto(registro).enqueue(new Callback<String>() {
+                                            @Override
+                                            public void onResponse(Call<String> call, Response<String> response) {
+                                                if (response.isSuccessful()) {
+                                                    String tipo = (quantidade % 2 == 0) ? "Entrada" : "Saída";
+                                                    Toast.makeText(getContext(), tipo + " registrada com sucesso!", Toast.LENGTH_SHORT).show();
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putBoolean("atualizarStatus", true);
+                                                    Navigation.findNavController(view).navigate(R.id.action_registroPontoConfirmar_to_registroPontoSucesso, bundle);
+                                                } else {
+                                                    Toast.makeText(getContext(), "Erro ao registrar ponto: " + response.code(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<String> call, Throwable t) {
+                                                Toast.makeText(getContext(), "Falha na comunicação: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                                Log.e("RetrofitError", "Erro ao registrar ponto", t);
+                                            }
+                                        });
+
                                     } else {
-                                        Toast.makeText(getContext(), "Erro ao registrar ponto: " + response.code(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Erro ao verificar registros do dia", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-                                    Toast.makeText(getContext(), "Falha na comunicação: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                                    Log.e("RetrofitError", "Erro ao registrar ponto", t);
+                                public void onFailure(Call<Integer> call, Throwable t) {
+                                    Toast.makeText(getContext(), "Falha ao buscar registros do dia: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
+
                         } else {
                             Toast.makeText(getContext(), "Erro ao buscar empresa do operário", Toast.LENGTH_SHORT).show();
                         }
@@ -155,6 +188,7 @@ public class RegistroPontoConfirmar extends Fragment {
             }
         });
 
+        // Carrega imagens do usuário e empresa
         IOperario iOperario = ApiClientAdapter.getRetrofitInstance().create(IOperario.class);
         iOperario.getOperarioPorId(usuarioId).enqueue(new Callback<Operario>() {
             @Override
@@ -168,7 +202,7 @@ public class RegistroPontoConfirmar extends Fragment {
                         Glide.with(requireContext()).load(urlOperario).circleCrop().into(imgUser);
                     }
 
-                    // Empresa
+                    // Carrega imagem da empresa
                     int idEmpresa = operario.getIdEmpresa();
                     IEmpresa iEmpresa = ApiClientAdapter.getRetrofitInstance().create(IEmpresa.class);
                     iEmpresa.getEmpresaPorId(idEmpresa).enqueue(new Callback<Empresa>() {
@@ -176,37 +210,29 @@ public class RegistroPontoConfirmar extends Fragment {
                         public void onResponse(Call<Empresa> call, Response<Empresa> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 String urlEmpresa = response.body().getImagemUrl();
-
-                                // Carrega imagem da empresa (ou padrão)
-                                if (urlEmpresa == null || urlEmpresa.isEmpty()) {
-                                    Glide.with(requireContext())
-                                            .load(R.drawable.profile_pic_default)
-                                            .circleCrop()
-                                            .placeholder(R.drawable.profile_pic_default)
-                                            .error(R.drawable.profile_pic_default)
-                                            .into(imgEmpresa);
-                                } else {
-                                    Glide.with(requireContext())
-                                            .load(urlEmpresa)
-                                            .circleCrop()
-                                            .placeholder(R.drawable.profile_pic_default)
-                                            .error(R.drawable.profile_pic_default)
-                                            .into(imgEmpresa);
-                                }
+                                Glide.with(requireContext())
+                                        .load((urlEmpresa == null || urlEmpresa.isEmpty()) ? R.drawable.profile_pic_default : urlEmpresa)
+                                        .circleCrop()
+                                        .placeholder(R.drawable.profile_pic_default)
+                                        .error(R.drawable.profile_pic_default)
+                                        .into(imgEmpresa);
                             }
                         }
+
                         @Override
-                        public void onFailure(Call<Empresa> call, Throwable t) { }
+                        public void onFailure(Call<Empresa> call, Throwable t) {}
                     });
                 } else {
                     Log.e("API", "Erro de resposta: " + response.code());
                 }
             }
+
             @Override
             public void onFailure(Call<Operario> call, Throwable t) {
                 Log.e("RetrofitError", "Erro: " + t.getMessage(), t);
             }
         });
+
         return view;
     }
 }
