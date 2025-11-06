@@ -151,6 +151,9 @@
             android:name="idUser"
             app:argType="integer"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_registroPontoCamera_to_registroPontoConfirmar"
+            app:destination="@id/registroPontoConfirmar" />
     </fragment>
 
     <!-- MONITORAMENTO -->

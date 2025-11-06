@@ -1,6 +1,7 @@
 package com.example.mobilesinara.ui.ChatBot;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -19,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.mobilesinara.HomeOperario;
 import com.example.mobilesinara.Interface.IChatBotAPI;
 import com.example.mobilesinara.Interface.SQL.IEmpresa;
 import com.example.mobilesinara.Interface.SQL.IOperario;
@@ -26,9 +29,11 @@ import com.example.mobilesinara.Models.ChatResponse;
 import com.example.mobilesinara.Models.Empresa;
 import com.example.mobilesinara.Models.Operario;
 import com.example.mobilesinara.R;
+import com.example.mobilesinara.TelaOpcoes;
 import com.example.mobilesinara.adapter.ApiClientAdapter;
 import com.example.mobilesinara.adapter.RetrofitClient;
 import com.example.mobilesinara.databinding.FragmentChatBotBinding;
+import com.example.mobilesinara.login.adm.LoginADM;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +72,13 @@ public class ChatBot extends Fragment {
         ImageView imgEmpresa = root.findViewById(R.id.imgEmpresa);
         LinearLayout layoutMessages = root.findViewById(R.id.layoutMessages);
         ScrollView scrollView = root.findViewById(R.id.scrollViewChat);
+        ImageButton btVoltar = root.findViewById(R.id.bt_voltar);
+
+//        btVoltar.setOnClickListener(view -> {
+//            Intent intent = new Intent(requireActivity(), HomeOperario.class);
+//            startActivity(intent);
+//            requireActivity().overridePendingTransition(0, 0);
+//        });
 
         sendButton.setOnClickListener(v -> {
             String message = input.getText().toString().trim();

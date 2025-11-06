@@ -73,6 +73,11 @@ public class LoginOperarioAlterarSenha2 extends AppCompatActivity {
                 return;
             }
 
+            if (senhaAtual.equals(senhaNova)) {
+                Toast.makeText(LoginOperarioAlterarSenha2.this, "A nova senha não pode ser igual à senha atual", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             IOperario apiService = ApiClientAdapter.getRetrofitInstance().create(IOperario.class);
 
             Call<Boolean> verificarCall = apiService.verificarSenha(idUser, senhaAtual);

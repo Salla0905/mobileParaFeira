@@ -27,18 +27,17 @@
         android:fontFamily="@font/montserrat_bold"
         android:text="Configurações"
         android:textColor="@color/md_theme_primaryContainer"
-        android:textSize="34sp"
+        android:textSize="32sp"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/imageView9" />
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="23dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="104dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="115dp"
         android:src="@drawable/bt_voltar"
-        android:textColor="@color/md_theme_primaryContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,16 +52,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
-    <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/bt_sms"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView27" />
-
     <TextView
         android:id="@+id/textView27"
         android:layout_width="wrap_content"
@@ -75,19 +64,6 @@
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView11" />
-
-    <TextView
-        android:id="@+id/textView30"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="9dp"
-        android:fontFamily="@font/montserrat_medium"
-        android:text="Permissão de sms:"
-        android:textColor="@color/md_theme_primaryContainer"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView12" />
 
     <Button
         android:id="@+id/button11"
@@ -130,21 +106,6 @@
         app:cornerRadius="10dp"
         app:layout_constraintStart_toEndOf="@+id/textView27"
         app:layout_constraintTop_toBottomOf="@+id/textView19" />
-
-    <Button
-        android:id="@+id/button15"
-        android:layout_width="wrap_content"
-        android:layout_height="37dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="43dp"
-        android:fontFamily="@font/montserrat_bold"
-        android:padding="2dp"
-        android:text="OK"
-        android:backgroundTint="#7FD170"
-        android:textColor="#409346"
-        app:cornerRadius="10dp"
-        app:layout_constraintStart_toEndOf="@+id/textView30"
-        app:layout_constraintTop_toBottomOf="@+id/button14" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
