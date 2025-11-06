@@ -47,14 +47,11 @@ public class Configuration extends Fragment {
         Button bt_cadastrar_rosto = root.findViewById(R.id.button11);
         Button bt_alterar_senha = root.findViewById(R.id.alterar_senha);
         Button bt_camera_permission = root.findViewById(R.id.button14);
-        Button bt_sms_permission = root.findViewById(R.id.button15);
 
         // Inicializa permissões
         configurarPermissaoCamera();
-        configurarPermissaoSMS();
 
         // Checa permissões
-        verificarPermissaoSMS(getContext(), bt_sms_permission);
         verificarPermissaoCamera(getContext(), bt_camera_permission);
 
         // Recebe argumentos
@@ -81,7 +78,7 @@ public class Configuration extends Fragment {
         // Botão para alterar senha
         bt_alterar_senha.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), LoginOperarioAlterarSenha2.class);
-            intent.putExtra("idUser", idUser); // 🔥 Corrigido: envia o ID do usuário
+            intent.putExtra("idUser", idUser);
             startActivity(intent);
         });
 
@@ -89,17 +86,6 @@ public class Configuration extends Fragment {
     }
 
     private void configurarPermissaoCamera() {
-        requestPermissions = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(),
-                result -> {
-                    for (Map.Entry<String, Boolean> entry : result.entrySet()) {
-                        Log.d("Permissions", entry.getKey() + " = " + entry.getValue());
-                    }
-                }
-        );
-    }
-
-    private void configurarPermissaoSMS() {
         requestPermissions = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
@@ -118,22 +104,6 @@ public class Configuration extends Fragment {
             bt.setBackgroundColor(Color.parseColor("#FF8669"));
             bt.setTextColor(Color.WHITE);
             bt.setOnClickListener(v -> requestPermissions.launch(new String[]{Manifest.permission.CAMERA}));
-
-        } else {
-            bt.setText("OK");
-            bt.setBackgroundColor(Color.parseColor("#7FD170"));
-            bt.setTextColor(Color.parseColor("#409346"));
-        }
-    }
-
-    private void verificarPermissaoSMS(Context context, Button bt) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            bt.setText("ATIVAR");
-            bt.setBackgroundColor(Color.parseColor("#FF8669"));
-            bt.setTextColor(Color.WHITE);
-            bt.setOnClickListener(v -> requestPermissions.launch(new String[]{Manifest.permission.SEND_SMS}));
 
         } else {
             bt.setText("OK");

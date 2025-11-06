@@ -31,6 +31,8 @@ import com.example.mobilesinara.Models.Operario;
 import com.example.mobilesinara.R;
 import com.example.mobilesinara.adapter.ApiClientAdapter;
 import com.example.mobilesinara.databinding.FragmentDashboardBinding;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,12 +73,22 @@ public class DashboardFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recyclerForms);
         ImageView imgUser = root.findViewById(R.id.imgUser);
         ImageView imgEmpresa = root.findViewById(R.id.imgEmpresa);
+        TextInputLayout textInputLayout = root.findViewById(R.id.textInputLayout3);
+        TextInputEditText editText = root.findViewById(R.id.text_pesquisa);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new FormUnificadoAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
         carregarDadosUsuario(imgUser, imgEmpresa, idUser);
+
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                textInputLayout.setHint("");
+            } else if (editText.getText() == null || editText.getText().toString().isEmpty()) {
+                textInputLayout.setHint("Pesquisar formulário");
+            }
+        });
 
         txtPesquisa.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
