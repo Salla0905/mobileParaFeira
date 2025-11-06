@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private Retrofit retrofit;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -45,11 +46,13 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
         Bundle args = getArguments();
         if (args == null || !args.containsKey("idUser")) {
             Toast.makeText(getContext(), "Erro: usuário não identificado", Toast.LENGTH_SHORT).show();
             return root;
         }
+
         int idUser = args.getInt("idUser");
 
         Button botaoPonto = root.findViewById(R.id.button2);
@@ -58,25 +61,25 @@ public class HomeFragment extends Fragment {
             getActivity().overridePendingTransition(0, 0);
         });
 
-        Button bt_status = root.findViewById(R.id.button7);
+        Button btStatus = root.findViewById(R.id.button7);
         TextView formsPendentes = root.findViewById(R.id.formsPendentes);
         TextView formsRespondidos = root.findViewById(R.id.formsRespondidos);
         ImageView iconUser = root.findViewById(R.id.imgUser);
         ImageView iconEmpresa = root.findViewById(R.id.imgEmpresa);
 
-        Button bt_sinaraAi = root.findViewById(R.id.button);
-        bt_sinaraAi.setOnClickListener(v ->
+        Button btSinaraAi = root.findViewById(R.id.button);
+        btSinaraAi.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.ChatBot));
 
-        Button bt_forms = root.findViewById(R.id.button3);
-        bt_forms.setOnClickListener(v ->
+        Button btForms = root.findViewById(R.id.button3);
+        btForms.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.navigation_forms_operario));
 
-        ImageView bt_configuration = root.findViewById(R.id.imageView13);
-        bt_configuration.setOnClickListener(v ->
+        ImageView btConfiguration = root.findViewById(R.id.imageView13);
+        btConfiguration.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_configuration));
 
-        chamarApi(formsPendentes, formsRespondidos, iconUser, iconEmpresa, bt_status, idUser);
+        chamarApi(formsPendentes, formsRespondidos, iconUser, iconEmpresa, btStatus, idUser);
 
         return root;
     }
@@ -86,7 +89,7 @@ public class HomeFragment extends Fragment {
                            Button btStatus, int idUser) {
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://ms-sinara-sql-oox0.onrender.com/api/user/")
+                .baseUrl("https://ms-sinara-sql-oox0.onrender.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -94,6 +97,7 @@ public class HomeFragment extends Fragment {
         IRegistroPonto iRegistroPonto = ApiClientAdapter.getRetrofitInstance().create(IRegistroPonto.class);
         IRespostaFormularioPersonalizado iRespostaFormularioPersonalizado = ApiClientAdapter.getRetrofitInstance().create(IRespostaFormularioPersonalizado.class);
         IFormularioPersonalizado iFormularioPersonalizado = ApiClientAdapter.getRetrofitInstance().create(IFormularioPersonalizado.class);
+        IEmpresa iEmpresa = ApiClientAdapter.getRetrofitInstance().create(IEmpresa.class);
 
         iRegistroPonto.getStatusOperario(idUser).enqueue(new Callback<Boolean>() {
             @Override
@@ -104,7 +108,9 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable t) { }
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("STATUS", "Erro ao buscar status: " + t.getMessage());
+            }
         });
 
         iRespostaFormularioPersonalizado.getQuantidadeRespostasPorUsuario(idUser)
@@ -113,11 +119,13 @@ public class HomeFragment extends Fragment {
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             formsRespondidos.setText(String.valueOf(response.body()));
-                            Log.e("Respondidos", "ID: " + idUser);
+                            Log.d("FORM_RESPONDIDOS", "Respondidos: " + response.body());
                         }
                     }
                     @Override
-                    public void onFailure(Call<Integer> call, Throwable t) { }
+                    public void onFailure(Call<Integer> call, Throwable t) {
+                        Log.e("FORM_RESPONDIDOS", "Erro: " + t.getMessage());
+                    }
                 });
 
         iFormularioPersonalizado.getQtdFormulariosPendentes(idUser)
@@ -126,11 +134,13 @@ public class HomeFragment extends Fragment {
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             formsPendentes.setText(String.valueOf(response.body()));
-                            Log.e("Pendentes", "ID: " + idUser);
+                            Log.d("FORM_PENDENTES", "Pendentes: " + response.body());
                         }
                     }
                     @Override
-                    public void onFailure(Call<Integer> call, Throwable t) { }
+                    public void onFailure(Call<Integer> call, Throwable t) {
+                        Log.e("FORM_PENDENTES", "Erro: " + t.getMessage());
+                    }
                 });
 
         iOperario.getOperarioPorId(idUser).enqueue(new Callback<Operario>() {
@@ -138,48 +148,69 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<Operario> call, Response<Operario> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Operario operario = response.body();
+
                     String urlOperario = operario.getImagemUrl();
-                    if (urlOperario == null || urlOperario.isEmpty()) {
-                        Glide.with(getContext()).load(R.drawable.profile_pic_default).into(iconUser);
-                    } else {
-                        Glide.with(getContext()).load(urlOperario).circleCrop().into(iconUser);
+                    if (isAdded() && getContext() != null) {
+                        if (urlOperario == null || urlOperario.isEmpty()) {
+                            Glide.with(requireContext())
+                                    .load(R.drawable.profile_pic_default)
+                                    .circleCrop()
+                                    .into(iconUser);
+                        } else {
+                            String urlCompletaOperario = urlOperario.startsWith("http")
+                                    ? urlOperario
+                                    : "https://ms-sinara-sql-oox0.onrender.com" + urlOperario;
+
+                            Glide.with(requireContext())
+                                    .load(urlCompletaOperario)
+                                    .circleCrop()
+                                    .placeholder(R.drawable.profile_pic_default)
+                                    .error(R.drawable.profile_pic_default)
+                                    .into(iconUser);
+                        }
                     }
 
                     int idEmpresa = operario.getIdEmpresa();
-                    IEmpresa iEmpresa = retrofit.create(IEmpresa.class);
+                    Log.d("EMPRESA_ID", "ID Empresa: " + idEmpresa);
+
                     iEmpresa.getEmpresaPorId(idEmpresa).enqueue(new Callback<Empresa>() {
                         @Override
                         public void onResponse(Call<Empresa> call, Response<Empresa> response) {
+                            if (!isAdded() || getContext() == null) return;
+
                             if (response.isSuccessful() && response.body() != null) {
                                 String urlEmpresa = response.body().getImagemUrl();
-                                Log.e("URL_EMPRESA", "URL recebida: " + urlEmpresa);
-                                if (urlEmpresa == null || urlEmpresa.isEmpty()) {
-                                    Glide.with(requireContext())
-                                            .load(R.drawable.profile_pic_default)
-                                            .circleCrop()
-                                            .placeholder(R.drawable.profile_pic_default)
-                                            .error(R.drawable.profile_pic_default)
-                                            .into(iconEmpresa);
-                                } else {
-                                    Glide.with(requireContext())
-                                            .load(urlEmpresa)
-                                            .circleCrop()
-                                            .placeholder(R.drawable.profile_pic_default)
-                                            .error(R.drawable.profile_pic_default)
-                                            .into(iconEmpresa);
-                                }
+                                Log.d("URL_EMPRESA", "URL recebida: " + urlEmpresa);
+
+                                String urlCompletaEmpresa = (urlEmpresa != null && urlEmpresa.startsWith("http"))
+                                        ? urlEmpresa
+                                        : "https://ms-sinara-sql-oox0.onrender.com" + (urlEmpresa != null ? urlEmpresa : "");
+
+                                Glide.with(requireContext())
+                                        .load(urlCompletaEmpresa)
+                                        .circleCrop()
+                                        .placeholder(R.drawable.profile_pic_default)
+                                        .error(R.drawable.profile_pic_default)
+                                        .into(iconEmpresa);
+                            } else {
+                                Log.e("EMPRESA", "Erro resposta: " + response.code());
                             }
                         }
+
                         @Override
-                        public void onFailure(Call<Empresa> call, Throwable t) { }
+                        public void onFailure(Call<Empresa> call, Throwable t) {
+                            Log.e("EMPRESA", "Erro: " + t.getMessage());
+                        }
                     });
+
                 } else {
-                    Log.e("API", "Erro de resposta: " + response.code());
+                    Log.e("OPERARIO", "Erro resposta: " + response.code());
                 }
             }
+
             @Override
             public void onFailure(Call<Operario> call, Throwable t) {
-                Log.e("RetrofitError", "Erro: " + t.getMessage(), t);
+                Log.e("OPERARIO", "Erro Retrofit: " + t.getMessage(), t);
             }
         });
     }

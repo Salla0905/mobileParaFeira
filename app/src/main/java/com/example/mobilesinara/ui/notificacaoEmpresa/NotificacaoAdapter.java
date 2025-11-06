@@ -51,7 +51,7 @@ public class NotificacaoAdapter extends RecyclerView.Adapter<NotificacaoAdapter.
 
         public NotificacaoViewHolder(@NonNull View itemView) {
             super(itemView);
-            conteudo = itemView.findViewById(R.id.textView17);
+            conteudo = itemView.findViewById(R.id.txtPergunta);
             dataEHora = itemView.findViewById(R.id.textView18);
             icon = itemView.findViewById(R.id.imageView16);
         }

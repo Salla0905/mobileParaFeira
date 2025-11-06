@@ -50,7 +50,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.textView16);
-            descricao = itemView.findViewById(R.id.textView17);
+            descricao = itemView.findViewById(R.id.txtPergunta);
             dataEHora = itemView.findViewById(R.id.textView18);
         }
     }

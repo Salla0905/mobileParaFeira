@@ -3,7 +3,9 @@ package com.example.mobilesinara.ui.dashboard;
 import static android.view.View.INVISIBLE;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,7 @@ public class FormUnificadoAdapter extends RecyclerView.Adapter<FormUnificadoAdap
     public void onBindViewHolder(@NonNull FormsViewHolder holder, int position) {
         FormularioItem item = lista.get(position);
 
+        // Define textos
         holder.titulo.setText(item.getTitulo() != null ? item.getTitulo() : "Sem título");
         if (item.getData() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault());
@@ -58,16 +61,31 @@ public class FormUnificadoAdapter extends RecyclerView.Adapter<FormUnificadoAdap
         holder.status.setText(item.getStatus() != null ? item.getStatus() : "");
 
         if ("padrao".equalsIgnoreCase(item.getTipo())) {
-            holder.bt_status.setBackgroundColor(Color.parseColor("#455A64"));
+            holder.bt_status.setBackgroundColor(Color.parseColor("#455A64")); // cinza
         } else {
-            holder.bt_status.setBackgroundColor(Color.parseColor("#409346"));
+            holder.bt_status.setBackgroundColor(Color.parseColor("#409346")); // verde
         }
 
         holder.bt_extra.setVisibility(INVISIBLE);
+
         holder.bt_principal.setText("Abrir");
-        holder.bt_principal.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.monitoramentoAguardando)
-        );
+        holder.bt_principal.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("tipo", item.getTipo());
+
+            if (item.getId() != null) {
+                bundle.putString("idFormulario", item.getId());
+            }
+
+            SharedPreferences prefs = v.getContext().getSharedPreferences("sinara_prefs", android.content.Context.MODE_PRIVATE);
+            int idUser = prefs.getInt("idUser", -1);
+            if (idUser != -1) {
+                bundle.putInt("idUser", idUser);
+            }
+
+            Navigation.findNavController(v).navigate(R.id.monitoramentoAguardando, bundle);
+        });
+
     }
 
     @Override
