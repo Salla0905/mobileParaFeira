@@ -128,8 +128,9 @@ public class LoginOperarioAlterarSenha2 extends AppCompatActivity {
 
         //botão de voltar
         btVoltar.setOnClickListener(view -> {
-            startActivity(new Intent(LoginOperarioAlterarSenha2.this, LoginOperarioAlterarSenha.class));
-            overridePendingTransition(0, 0);
+            Intent intent = new Intent(LoginOperarioAlterarSenha2.this, LoginOperarioAlterarSenha.class);
+            intent.putExtra("idUser", idUser);
+            startActivity(intent);
         });
 
 
