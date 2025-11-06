@@ -8,58 +8,7 @@
     android:background="@color/md_theme_onBackground"
     tools:context=".ui.ChatBot.ChatBot">
 
-    <ImageView
-        android:id="@+id/imageView14"
-        android:layout_width="44dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="53dp"
-        android:src="@drawable/bt_send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayout3" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="49dp"
-        android:textColor="@color/md_theme_primaryContainer"
-        android:textColorHint="@color/md_theme_primaryContainer"
-        app:boxBackgroundColor="#BFD4E3"
-        app:boxBackgroundMode="filled"
-        app:boxCornerRadiusBottomEnd="30dp"
-        app:boxCornerRadiusBottomStart="30dp"
-        app:boxCornerRadiusTopEnd="30dp"
-        app:boxCornerRadiusTopStart="30dp"
-        app:boxStrokeColor="@android:color/transparent"
-        app:boxStrokeWidth="0dp"
-        app:hintTextColor="@color/md_theme_primaryContainer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView14"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:startIconTint="#8193B1">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_pesquisa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:gravity="start"
-            android:hint="Digite sua mensagem"
-            android:textColor="#8193B1"
-            android:textColorHint="#2E3540"
-            android:textSize="18sp"
-            tools:layout_editor_absoluteX="40dp"
-            tools:layout_editor_absoluteY="322dp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
+    <!-- Logo -->
     <ImageView
         android:id="@+id/imageView9"
         android:layout_width="wrap_content"
@@ -70,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Botão voltar -->
     <ImageView
         android:id="@+id/voltar"
         android:layout_width="15dp"
@@ -81,6 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Imagem da empresa -->
     <ImageView
         android:id="@+id/imgEmpresa"
         android:layout_width="wrap_content"
@@ -91,6 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Imagem do usuário -->
     <ImageView
         android:id="@+id/imgUser"
         android:layout_width="wrap_content"
@@ -101,6 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Título -->
     <TextView
         android:id="@+id/textView19"
         android:layout_width="wrap_content"
