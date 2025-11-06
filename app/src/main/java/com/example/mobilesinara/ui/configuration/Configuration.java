@@ -56,7 +56,7 @@ public class Configuration extends Fragment {
 
         // Checa permissões
         verificarPermissaoCamera(getContext(), bt_camera_permission);
-        verificarPermissaoSMS(getContext(), bt_sms_permission);
+//        verificarPermissaoSMS(getContext(), bt_sms_permission);
 
         // Recebe argumentos
         Bundle args = getArguments();
@@ -98,7 +98,7 @@ public class Configuration extends Fragment {
                     }
                     // Atualiza estado visual dos botões
                     verificarPermissaoCamera(getContext(), binding.button14);
-                    verificarPermissaoSMS(getContext(), binding.button15);
+//                    verificarPermissaoSMS(getContext(), binding.button15);
                 }
         );
     }
@@ -120,22 +120,22 @@ public class Configuration extends Fragment {
         }
     }
 
-    private void verificarPermissaoSMS(Context context, Button bt) {
-        boolean granted = ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS)
-                == PackageManager.PERMISSION_GRANTED;
-
-        if (!granted) {
-            bt.setText("ATIVAR");
-            bt.setBackgroundColor(Color.parseColor("#FF8669"));
-            bt.setTextColor(Color.WHITE);
-            bt.setOnClickListener(v -> requestPermissions.launch(new String[]{Manifest.permission.SEND_SMS}));
-        } else {
-            bt.setText("OK");
-            bt.setBackgroundColor(Color.parseColor("#7FD170"));
-            bt.setTextColor(Color.parseColor("#409346"));
-            bt.setOnClickListener(v -> abrirConfiguracoesApp());
-        }
-    }
+//    private void verificarPermissaoSMS(Context context, Button bt) {
+//        boolean granted = ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS)
+//                == PackageManager.PERMISSION_GRANTED;
+//
+//        if (!granted) {
+//            bt.setText("ATIVAR");
+//            bt.setBackgroundColor(Color.parseColor("#FF8669"));
+//            bt.setTextColor(Color.WHITE);
+//            bt.setOnClickListener(v -> requestPermissions.launch(new String[]{Manifest.permission.SEND_SMS}));
+//        } else {
+//            bt.setText("OK");
+//            bt.setBackgroundColor(Color.parseColor("#7FD170"));
+//            bt.setTextColor(Color.parseColor("#409346"));
+//            bt.setOnClickListener(v -> abrirConfiguracoesApp());
+//        }
+//    }
 
     private void abrirConfiguracoesApp() {
         new AlertDialog.Builder(requireContext())

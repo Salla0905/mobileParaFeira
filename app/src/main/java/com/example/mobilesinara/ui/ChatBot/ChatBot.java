@@ -74,13 +74,6 @@ public class ChatBot extends Fragment {
         ImageView imgEmpresa = root.findViewById(R.id.imgEmpresa);
         LinearLayout layoutMessages = root.findViewById(R.id.layoutMessages);
         ScrollView scrollView = root.findViewById(R.id.scrollViewChat);
-        ImageButton btVoltar = root.findViewById(R.id.bt_voltar);
-
-//        btVoltar.setOnClickListener(view -> {
-//            Intent intent = new Intent(requireActivity(), HomeOperario.class);
-//            startActivity(intent);
-//            requireActivity().overridePendingTransition(0, 0);
-//        });
 
         btVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
