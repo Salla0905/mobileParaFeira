@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.monitoramentoAguardando.monitoramentoAguardando"
     android:background="@color/md_theme_onBackground"
-    >
+    tools:context=".ui.monitoramentoAguardando.monitoramentoAguardando">
 
+    <!-- Logo e usuário -->
     <ImageView
         android:id="@+id/imageView9"
         android:layout_width="wrap_content"
@@ -17,24 +18,26 @@
         android:src="@drawable/sinara_logo_home"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
-        android:id="@+id/imgEmpresa"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/imgUser"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="36dp"
         android:src="@drawable/profile_pic_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Título -->
     <ImageView
-        android:id="@+id/imgUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="56dp"
-        android:src="@drawable/profile_pic_default"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/imageView3"
+        android:layout_width="23dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="104dp"
+        android:src="@drawable/bt_voltar"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -50,16 +53,7 @@
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/imageView9" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="23dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="104dp"
-        android:src="@drawable/bt_voltar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+    <!-- Status e descrição -->
     <TextView
         android:id="@+id/textView21"
         android:layout_width="wrap_content"
@@ -97,18 +91,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
     <TextView
-        android:id="@+id/textView26"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="9dp"
-        android:fontFamily="@font/montserrat"
-        android:text="Descrição padrão"
-        android:textColor="@color/md_theme_primaryContainer"
-        app:layout_constraintStart_toEndOf="@+id/textView23"
-        app:layout_constraintTop_toBottomOf="@+id/textView25" />
-
-    <TextView
         android:id="@+id/textView23"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -120,17 +102,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
+    <TextView
+        android:id="@+id/textView26"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="36dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Descrição padrão"
+        android:textColor="@color/md_theme_primaryContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView23"
+        app:layout_constraintTop_toBottomOf="@+id/textView25" />
+
+    <!-- CONTAINER DOS CAMPOS (SCROLL) -->
+    <ScrollView
+        android:id="@+id/scrollCampos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textView26"
+        app:layout_constraintBottom_toTopOf="@id/button9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layoutOpcoes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp" />
+    </ScrollView>
+
+    <!-- Botão Enviar -->
     <Button
         android:id="@+id/button9"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="88dp"
-        android:text="Enviar formulario"
-        android:textSize="24sp"
+        android:layout_marginBottom="48dp"
+        android:text="Enviar formulário"
+        android:textSize="20sp"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
