@@ -48,7 +48,7 @@ public class LoginOperarioAlterarSenha extends AppCompatActivity {
         btVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginOperarioAlterarSenha.this, LoginOperarioCadastroRosto2.class);
+                Intent intent = new Intent(LoginOperarioAlterarSenha.this, LoginOperario.class);
                 intent.putExtra("idUser", idUser);
                 startActivity(intent);
                 finish();
