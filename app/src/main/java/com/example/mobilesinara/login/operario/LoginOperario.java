@@ -119,7 +119,7 @@ public class LoginOperario extends AppCompatActivity {
                     int idUser = response.body();
                     Log.d("LoginOperario", "ID do operário retornado: " + idUser);
 
-                    Intent intent = new Intent(LoginOperario.this, LoginOperarioCadastroRosto.class);
+                    Intent intent = new Intent(LoginOperario.this, LoginOperarioAlterarSenha.class);
                     intent.putExtra("idUser", idUser);
                     startActivity(intent);
                     overridePendingTransition(0, 0);
