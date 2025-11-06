@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.mobilesinara.HomeOperario;
@@ -69,16 +70,17 @@ public class ChatBot extends Fragment {
         EditText input = root.findViewById(R.id.text_pesquisa);
         ImageView sendButton = root.findViewById(R.id.imageView14);
         ImageView imgUser = root.findViewById(R.id.imgUser);
+        ImageView btVoltar = root.findViewById(R.id.bt_voltar);
         ImageView imgEmpresa = root.findViewById(R.id.imgEmpresa);
         LinearLayout layoutMessages = root.findViewById(R.id.layoutMessages);
         ScrollView scrollView = root.findViewById(R.id.scrollViewChat);
-        ImageButton btVoltar = root.findViewById(R.id.bt_voltar);
 
-//        btVoltar.setOnClickListener(view -> {
-//            Intent intent = new Intent(requireActivity(), HomeOperario.class);
-//            startActivity(intent);
-//            requireActivity().overridePendingTransition(0, 0);
-//        });
+        btVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.navigation_home_operario);
+            }
+        });
 
         sendButton.setOnClickListener(v -> {
             String message = input.getText().toString().trim();
