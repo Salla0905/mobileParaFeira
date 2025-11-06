@@ -24,7 +24,7 @@
         android:layout_marginStart="49dp"
         android:layout_marginTop="21dp"
         android:fontFamily="@font/montserrat_bold"
-        android:text="Formularios"
+        android:text="Notificação"
         android:textColor="@color/md_theme_primaryContainer"
         android:textSize="34sp"
         app:layout_constraintStart_toStartOf="parent"
