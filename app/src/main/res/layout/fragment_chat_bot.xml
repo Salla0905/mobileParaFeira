@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/voltar"
+        android:layout_width="15dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="97dp"
+        android:src="@drawable/bt_voltar"
+        android:textColor="@color/md_theme_primaryContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/imgEmpresa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -89,7 +100,9 @@
         app:boxStrokeColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView14"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="Digite sua mensagem"
+        android:textColorHint="#2E3540">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_pesquisa"
@@ -97,9 +110,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:gravity="start"
-            android:hint="Digite sua mensagem"
-            android:textColor="#7085A2"
-            android:textColorHint="#2E3540"
+            android:textColor="#2E3540"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 

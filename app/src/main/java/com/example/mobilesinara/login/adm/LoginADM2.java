@@ -94,7 +94,7 @@ public class LoginADM2 extends AppCompatActivity {
                 return;
             }
 
-            if (codigo.equals("962845")) {
+            if (codigo.equals("123456")) {
                 if (cnpjRecebido == null || cnpjRecebido.isEmpty()) {
                     Log.e("LOGIN_ADM2", "CNPJ não recebido — não é possível abrir HomeEmpresa");
                     Toast.makeText(LoginADM2.this, "Erro: CNPJ não encontrado.", Toast.LENGTH_SHORT).show();
