@@ -70,7 +70,7 @@ public class ChatBot extends Fragment {
         EditText input = root.findViewById(R.id.text_pesquisa);
         ImageView sendButton = root.findViewById(R.id.imageView14);
         ImageView imgUser = root.findViewById(R.id.imgUser);
-        ImageView btVoltar = root.findViewById(R.id.bt_voltar);
+        ImageView btVoltar = root.findViewById(R.id.voltar);
         ImageView imgEmpresa = root.findViewById(R.id.imgEmpresa);
         LinearLayout layoutMessages = root.findViewById(R.id.layoutMessages);
         ScrollView scrollView = root.findViewById(R.id.scrollViewChat);

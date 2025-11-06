@@ -56,7 +56,7 @@
         android:width="340dp"
         android:backgroundTint="@color/md_theme_primaryFixed_highContrast"
         android:fontFamily="@font/montserrat_bold"
-        android:text="Empresa"
+        android:text="Gestor"
         android:textColor="@color/md_theme_surfaceVariant"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/bt_operario"

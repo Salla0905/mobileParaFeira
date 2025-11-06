@@ -104,7 +104,9 @@
         app:boxStrokeColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView14"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="Digite sua mensagem"
+        android:textColorHint="#2E3540">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_pesquisa"
@@ -112,8 +114,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:gravity="start"
-            android:hint="Digite sua mensagem"
-            android:textColor="#7085A2"
+            android:textColor="#2E3540"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
