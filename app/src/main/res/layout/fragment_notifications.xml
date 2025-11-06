@@ -17,6 +17,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="21dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Notificações"
+        android:textColor="@color/md_theme_primaryContainer"
+        android:textSize="34sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+
     <ImageView
         android:id="@+id/imgEmpresa"
         android:layout_width="wrap_content"
