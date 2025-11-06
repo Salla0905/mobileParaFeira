@@ -53,6 +53,7 @@
             android:gravity="start"
             android:hint="Digite sua mensagem"
             android:textColor="#8193B1"
+            android:textColorHint="#2E3540"
             android:textSize="18sp"
             tools:layout_editor_absoluteX="40dp"
             tools:layout_editor_absoluteY="322dp" />

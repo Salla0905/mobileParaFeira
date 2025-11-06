@@ -99,6 +99,7 @@
             android:gravity="start"
             android:hint="Digite sua mensagem"
             android:textColor="#7085A2"
+            android:textColorHint="#2E3540"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
