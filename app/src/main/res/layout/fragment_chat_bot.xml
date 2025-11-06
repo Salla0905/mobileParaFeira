@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/voltar"
+        android:layout_width="23dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="104dp"
+        android:src="@drawable/bt_voltar"
+        android:textColor="@color/md_theme_primaryContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/imgEmpresa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
