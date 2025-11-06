@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.mobilesinara.Interface.Mongo.IFormularioPadrao;
 import com.example.mobilesinara.Interface.Mongo.IFormularioPersonalizado;
 import com.example.mobilesinara.Interface.Mongo.IRespostaFormularioPersonalizado;
@@ -73,6 +75,15 @@ public class monitoramentoAguardando extends Fragment {
         String idFormulario = args.getString("idFormulario");
         String tipo = args.getString("tipo");
         TextView descricao = root.findViewById(R.id.textView26);
+        ImageView imgUser = root.findViewById(R.id.imgUser);
+        ImageView btVoltar = root.findViewById(R.id.imageView3);
+
+        btVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.navigation_forms_operario);
+            }
+        });
 
         LinearLayout layoutOpcoes = root.findViewById(R.id.layoutOpcoes);
 
@@ -84,6 +95,12 @@ public class monitoramentoAguardando extends Fragment {
             public void onResponse(Call<Operario> call, Response<Operario> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     idEmpresa[0] = response.body().getIdEmpresa();
+                    Glide.with(requireContext())
+                            .load(response.body().getImagemUrl())
+                            .circleCrop()
+                            .placeholder(R.drawable.profile_pic_default)
+                            .error(R.drawable.profile_pic_default)
+                            .into(imgUser);
                     if (tipo.equalsIgnoreCase("padrao") || tipo.equalsIgnoreCase("padrão")) {
                         carregarFormularioPadrao(layoutOpcoes, idFormulario, descricao);
                     } else if (tipo.equalsIgnoreCase("personalizado")) {
