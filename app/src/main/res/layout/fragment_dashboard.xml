@@ -33,8 +33,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:textColor="@color/md_theme_primaryContainer"
-            android:textSize="18sp" />
+            android:gravity="center"
+            android:hint="Pesquisar formularios"
+            android:textColor="#8193B1"
+            android:textColorHint="#2E3540"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="40dp"
+            tools:layout_editor_absoluteY="322dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView

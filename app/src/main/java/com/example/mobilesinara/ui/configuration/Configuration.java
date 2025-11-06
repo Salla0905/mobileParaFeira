@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -49,10 +52,11 @@ public class Configuration extends Fragment {
         Button bt_camera_permission = root.findViewById(R.id.button14);
 
         // Inicializa permissões
-        configurarPermissaoCamera();
+        configurarPermissoes();
 
         // Checa permissões
         verificarPermissaoCamera(getContext(), bt_camera_permission);
+        verificarPermissaoSMS(getContext(), bt_sms_permission);
 
         // Recebe argumentos
         Bundle args = getArguments();
@@ -85,31 +89,66 @@ public class Configuration extends Fragment {
         return root;
     }
 
-    private void configurarPermissaoCamera() {
+    private void configurarPermissoes() {
         requestPermissions = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
                     for (Map.Entry<String, Boolean> entry : result.entrySet()) {
                         Log.d("Permissions", entry.getKey() + " = " + entry.getValue());
                     }
+                    // Atualiza estado visual dos botões
+                    verificarPermissaoCamera(getContext(), binding.button14);
+                    verificarPermissaoSMS(getContext(), binding.button15);
                 }
         );
     }
 
     private void verificarPermissaoCamera(Context context, Button bt) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+        boolean granted = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
 
+        if (!granted) {
             bt.setText("ATIVAR");
             bt.setBackgroundColor(Color.parseColor("#FF8669"));
             bt.setTextColor(Color.WHITE);
             bt.setOnClickListener(v -> requestPermissions.launch(new String[]{Manifest.permission.CAMERA}));
-
         } else {
             bt.setText("OK");
             bt.setBackgroundColor(Color.parseColor("#7FD170"));
             bt.setTextColor(Color.parseColor("#409346"));
+            bt.setOnClickListener(v -> abrirConfiguracoesApp());
         }
+    }
+
+    private void verificarPermissaoSMS(Context context, Button bt) {
+        boolean granted = ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS)
+                == PackageManager.PERMISSION_GRANTED;
+
+        if (!granted) {
+            bt.setText("ATIVAR");
+            bt.setBackgroundColor(Color.parseColor("#FF8669"));
+            bt.setTextColor(Color.WHITE);
+            bt.setOnClickListener(v -> requestPermissions.launch(new String[]{Manifest.permission.SEND_SMS}));
+        } else {
+            bt.setText("OK");
+            bt.setBackgroundColor(Color.parseColor("#7FD170"));
+            bt.setTextColor(Color.parseColor("#409346"));
+            bt.setOnClickListener(v -> abrirConfiguracoesApp());
+        }
+    }
+
+    private void abrirConfiguracoesApp() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Desativar permissão")
+                .setMessage("Para desativar esta permissão, vá até as configurações do aplicativo.")
+                .setPositiveButton("Abrir configurações", (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 
     @Override
